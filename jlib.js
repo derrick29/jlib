@@ -53,15 +53,15 @@ var _ = (function() {
     return this;
   };
 
-  Jlib.prototype.html = function(value) {
-    let _html = "";
+  Jlib.prototype.text = function(value) {
+    let _text = "";
     this.each(function(item) {
       if (value) {
         item.innerHTML = value;
       }
-      _html = item.innerHTML;
+      _text = item.innerHTML;
     });
-    return _html;
+    return _text;
   };
 
   Jlib.prototype.value = function(value) {
