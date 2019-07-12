@@ -1,4 +1,4 @@
-var $ = (function() {
+var _ = (function() {
   "use strict";
 
   var Jlib = function(selector) {
@@ -109,39 +109,43 @@ var $ = (function() {
 
     let url = options.url;
     let method = options.method;
-    let contentType = options.contentType;
+    let contentType = "";
     let data = options.data;
     let sendData = data;
+    let fd = "";
 
-    xhr = new XMLHttpRequest();
-    xhr.open(method, url, true);
-    switch (contentType) {
-      case "application/json":
-        xhr.setRequestHeader("Content-Type", "application/json");
-        sendData = JSON.stringify(data);
-        break;
-      case urlForm:
-        let fd = new FormData();
-        Object.keys(data).map(e => {
-          fd.append(d, data[fd]);
-        });
-        console.log(fd);
-        xhr.setRequestHeader(
-          "Content-type",
-          "application/x-www-form-urlencoded"
-        );
-      default:
-        break;
-    }
-    xhr.onload = function() {
-      if (this.status == 200) {
-        callback(this.responseText);
+    if (options.method == "POST") {
+      contentType = options.contentType;
+      xhr = new XMLHttpRequest();
+      xhr.open(method, url, true);
+      switch (contentType) {
+        case "application/json":
+          xhr.setRequestHeader("Content-Type", "application/json");
+          sendData = JSON.stringify(data);
+          break;
+        case "urlForm":
+          // let fd = new FormData();
+          Object.keys(data).map(e => {
+            fd += `${e}=${data[e]}&`;
+          });
+          fd = fd.substr(0, fd.length - 1);
+          xhr.setRequestHeader(
+            "Content-type",
+            "application/x-www-form-urlencoded"
+          );
+        default:
+          break;
       }
-    };
-    if (method == "POST") {
-      xhr.send(sendData);
-    } else {
-      xhr.send();
+      xhr.onload = function() {
+        if (this.status == 200) {
+          callback(this.responseText);
+        }
+      };
+      if (contentType == "application/json") {
+        xhr.send(sendData);
+      } else {
+        xhr.send(fd);
+      }
     }
   };
 
